@@ -1,9 +1,35 @@
 workflows:
-    android-workflow-id:
-        name: Android Sample Workflow
-        # .......    
-        # .......
-        # .......  
-    ios-workflow-id:
-        name: iOS Sample Workflow
-        # ......
+  android-workflow-id:
+    name: Android Workflow
+    max_build_duration: 60
+    environment:
+      flutter: stable
+    scripts:
+      - name: Build APK
+        script: |
+          flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+
+  ios-workflow-id:
+    name: iOS Workflow
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      # xcode: latest # Możesz odkomentować, aby wymusić konkretną wersję Xcode
+    scripts:
+      - name: Set up code signing settings
+        script: |
+          # Tutaj w przyszłości dodasz konfigurację certyfikatów, 
+          # na start do testów lokalnych Codemagic spróbuje użyć domyślnych ustawień
+          echo "Setting up environment..."
+      - name: Get dependencies
+        script: |
+          flutter pub get
+      - name: Build IPA (Release)
+        script: |
+          flutter build ipa --release --no-codesign
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /Users/builder/library/Developer/Xcode/DerivedData/*/Build/Products/Release-iphoneos/*.app
+      - flutter_drive.log
