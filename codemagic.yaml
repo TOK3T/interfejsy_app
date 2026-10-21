@@ -16,20 +16,14 @@ workflows:
     max_build_duration: 60
     environment:
       flutter: stable
-      # xcode: latest # Możesz odkomentować, aby wymusić konkretną wersję Xcode
     scripts:
-      - name: Set up code signing settings
-        script: |
-          # Tutaj w przyszłości dodasz konfigurację certyfikatów, 
-          # na start do testów lokalnych Codemagic spróbuje użyć domyślnych ustawień
-          echo "Setting up environment..."
       - name: Get dependencies
         script: |
           flutter pub get
-      - name: Build IPA (Release)
+      - name: Build iOS (No codesign)
         script: |
           flutter build ipa --release --no-codesign
     artifacts:
+      - build/ios/iphoneos/*.app
       - build/ios/ipa/*.ipa
-      - /Users/builder/library/Developer/Xcode/DerivedData/*/Build/Products/Release-iphoneos/*.app
-      - flutter_drive.log
+      - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Release-iphoneos/*.app
